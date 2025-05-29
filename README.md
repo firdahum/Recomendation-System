@@ -362,50 +362,13 @@ Insight:
   - Misalnya, Crouching Tiger, Hidden Dragon lebih ke arah aksi dan seni bela diri, berbeda secara substansi dengan tema psikologis dan mimpi seperti di Inception. Ini bisa terjadi karena kemiripan kata dalam deskripsi atau genre overlap seperti Action dan Drama.
     
 ## 5. Evaluation
-### 5.1 Metrik yang digunakan: TF-IDF
-Nilai TF-IDF diperoleh dari penggabungan dua komponen, yaitu Term Frequency (TF) yang mengukur seberapa sering suatu istilah muncul dalam dokumen, dan Inverse Document Frequency (IDF) yang menilai seberapa jarang istilah tersebut muncul di seluruh dokumen. Gabungan keduanya memberikan bobot yang mencerminkan pentingnya istilah dalam konteks dokumen tertentu.
+Proyek ini bertujuan untuk melihat apakah rekomendasi film yang dihasilkan berdasarkan genre, keywords, dan overview mampu memberikan hasil yang akurat dan relevan. Namun, karena dataset yang digunakan tidak menyediakan data interaksi eksplisit antara pengguna dan film (seperti rating, klik, atau histori tontonan), evaluasi sistem rekomendasi tidak dapat dilakukan secara kuantitatif menggunakan metrik standar seperti Precision@K, Recall@K, MAP, atau NDCG.
 
-                𝑡𝑓(𝑡, 𝑑) = 1 + log (𝑓𝑡𝑑)
-Di mana:
-- 𝑡𝑓(𝑡, 𝑑) = Nilai TF untuk istilah t dalam dokumen d
-- 𝑓𝑡𝑑 = Jumlah istilah t dalam dokumen d
+Sebagai gantinya, evaluasi dilakukan secara kualitatif, yaitu dengan menganalisis hasil rekomendasi yang dihasilkan oleh model berbasis konten. Model ini menggunakan representasi teks gabungan dari overview, keywords, dan genre_list yang diolah menggunakan TF-IDF, serta perhitungan cosine similarity untuk menentukan kemiripan antar film.
 
-Nilai IDF untuk suatu istilah di dalam koleksi dapat dihitung menggunakan persamaan
+Beberapa film dipilih sebagai input, dan daftar film yang direkomendasikan diamati secara manual. Penilaian dilakukan berdasarkan relevansi isi, kesamaan tema, genre, dan topik. Hasilnya menunjukkan bahwa model mampu merekomendasikan film-film yang secara konteks cukup serupa dengan film acuan, terutama jika teks pada overview, keywords, dan genre_list kaya dan deskriptif.
 
-                𝑖𝑑𝑓(𝑡) = log ( N / (𝑑𝑓𝑡))
-Di mana:
-- 𝑖𝑑𝑓(𝑡) = Nilai IDF untuk istilah t dalam koleksi
-- 𝑑𝑓𝑡 = Jumlah dokumen yang mengandung istilah t
-- N = Total jumlah dokumen dalam koleksi
-
-Bobot TF-IDF untuk istilah t di dalam dokumen d dapat dihitung menggunakan persamaan
-
-                𝑡𝑓 − 𝑖𝑑𝑓(𝑡, 𝑑) = tf(𝑡, 𝑑) × 𝑖𝑑𝑓(𝑡)
-Di mana:
-- 𝑡𝑓 − 𝑖𝑑𝑓(𝑡, 𝑑) = Nilai TF-IDF untuk istilah t untuk dukumen d dalam koleksi
-- 𝑡𝑓(𝑡, 𝑑) = Nilai TF untuk istilah t dalam dokumen d
-- 𝑖𝑑𝑓(𝑡) = Nilai IDF untuk istilah t dalam koleksi
-
-### 5.2 Metrik yang digunakan: Cosine Similarity
-Cosine Similarity mengukur kemiripan antar dua vektor dengan menghitung sudut kosinus antara mereka. Dalam konteks ini, vektor berasal dari representasi TF-IDF dari kombinasi fitur (overview, genre, keywords)
-
-Formula:
-
-    cosine_similarity (A,B)=  (A ⋅ B) / (∥A∥ ∥B∥)
-
-
-- Nilai berkisar antara 0 hingga 1.
-
-- Semakin tinggi nilai cosine similarity, semakin mirip kontennya.
-
-
-Dalam proyek ini, sistem rekomendasi menggunakan metrik Cosine Similarity untuk menghitung kemiripan antar film berdasarkan fitur teks (overview, genre, keywords, dan production_companies) yang telah diolah menggunakan TF-IDF vectorization.
-
-Cosine Similarity dipilih karena mampu mengukur kesamaan dokumen secara efektif meskipun panjang teksnya berbeda.
-
-Evaluasi dilakukan dengan mengamati relevansi hasil rekomendasi, misalnya film yang direkomendasikan untuk "Avatar" sebagian besar memiliki genre dan kata kunci serupa seperti "Science Fiction", "alien", "space", dan teknologi luar angkasa, sehingga relevan dengan konteks film tersebut.
-
-Meskipun tidak menggunakan metrik seperti Precision@K atau Recall@K karena tidak ada data preferensi user, evaluasi berdasarkan interpretasi konten sudah cukup menggambarkan bahwa model bekerja sesuai harapan.
+Catatan: TF-IDF dan cosine similarity digunakan sebagai metode perhitungan kemiripan konten, bukan sebagai metrik evaluasi performa sistem. (Kesalahan saya sebelumnya)
 
 ## Problem Answer (Untuk no 2 dan 3, perbandingan dengan 4.2 Penerapan)
 ### 1. Bagaimana pengguna dapat menemukan film yang mirip dengan film favorit mereka berdasarkan isi/konten film?
