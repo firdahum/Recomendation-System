@@ -259,9 +259,7 @@ Insight:
 
 Missing values sudah tidak ada
 
-## 4. Modeling and Result
-### 4.1 Model Development dengan Content Based Features
-#### TF-IDF
+#### 3.1.4 TF-IDF
 Pada proyek saya ini perlu menggunakan TF-IDF (Term Frequency - Inverse Document Frequency) karena metode ini sangat efektif dalam mengolah data teks untuk sistem rekomendasi berbasis konten (content-based filtering)
 
 TF-IDF digunakan karena bisa mengekstrak makna penting dari teks, mengabaikan kata tidak penting, dan mengubah teks menjadi format numerik yang siap untuk menghitung kemiripan antar item.
@@ -274,6 +272,8 @@ Insight:
 
 Tahap penggabungan fitur teks (`combined_feature`) sangat penting dalam proses TF-IDF karena memungkinkan berbagai sumber informasi teks seperti overview, keywords, dan genre_list disatukan ke dalam satu kolom. TF-IDF hanya dapat bekerja pada satu kolom teks, sehingga penyatuan ini diperlukan agar semua informasi penting bisa diproses bersama. Dengan menggabungkan fitur-fitur tersebut, representasi teks menjadi lebih kaya dan kontekstual. Misalnya, overview memberikan gambaran alur cerita, keywords mencerminkan tema atau topik spesifik, dan genre_list menambahkan klasifikasi film. Kombinasi ini membantu TF-IDF menghitung bobot kata secara lebih akurat. Selain itu, vektor teks yang lebih lengkap meningkatkan akurasi perhitungan cosine similarity, sehingga menghasilkan rekomendasi film yang lebih relevan. Penggabungan ini juga mencegah kehilangan informasi penting yang mungkin terjadi jika hanya satu fitur saja yang digunakan dalam analisis.
 
+## 4. Modeling and Result
+### 4.1 Model Development dengan Content Based Features
 #### Cosine Similarity
 <p align="center">
    <img src="Assets/cosine_similarity.png"width="500"/>
