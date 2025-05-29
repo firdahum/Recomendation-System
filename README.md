@@ -61,7 +61,7 @@ Dataset yang saya gunakan diambil dari platform open source Kaggle dan dipublika
       Insight:
       1. Dataset ini terdiri dari 4803 baris dan 20 kolom
       2. Dataset ini terdiri dari 3 tipe data, yaitu: object, float64, dan int64
-      3. Terdapat Missing Values di variabel **homepage, release_date, runtime, dan tagline**
+      3. Terdapat Missing Values di variabel **homepage, release_date, runtime, overview dan tagline
 
 - Deskripsi Statistik Dataset
 <p align="center">
@@ -269,6 +269,10 @@ TF-IDF digunakan karena bisa mengekstrak makna penting dari teks, mengabaikan ka
 <p align="center">
    <img src="Assets/tf-idf.png"width="500"/>
 </p>
+
+Insight:
+
+Tahap penggabungan fitur teks (`combined_feature`) sangat penting dalam proses TF-IDF karena memungkinkan berbagai sumber informasi teks seperti overview, keywords, dan genre_list disatukan ke dalam satu kolom. TF-IDF hanya dapat bekerja pada satu kolom teks, sehingga penyatuan ini diperlukan agar semua informasi penting bisa diproses bersama. Dengan menggabungkan fitur-fitur tersebut, representasi teks menjadi lebih kaya dan kontekstual. Misalnya, overview memberikan gambaran alur cerita, keywords mencerminkan tema atau topik spesifik, dan genre_list menambahkan klasifikasi film. Kombinasi ini membantu TF-IDF menghitung bobot kata secara lebih akurat. Selain itu, vektor teks yang lebih lengkap meningkatkan akurasi perhitungan cosine similarity, sehingga menghasilkan rekomendasi film yang lebih relevan. Penggabungan ini juga mencegah kehilangan informasi penting yang mungkin terjadi jika hanya satu fitur saja yang digunakan dalam analisis.
 
 #### Cosine Similarity
 <p align="center">
