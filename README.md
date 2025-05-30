@@ -259,11 +259,28 @@ Insight:
 
 Missing values sudah tidak ada
 
-#### 3.1.4 TF-IDF
+
+## Jenis Sistem Rekomendasi
+
+Proyek ini menggunakan pendekatan **Content-Based Filtering**, yaitu sistem rekomendasi yang memberikan saran item (dalam hal ini film) berdasarkan kemiripan konten dengan item yang disukai atau dipilih pengguna.
+
+#### Cara Kerja Content-Based Filtering
+Content-Based Filtering bekerja dengan menganalisis fitur-fitur dari masing-masing item, lalu membandingkan item berdasarkan representasi fitur tersebut. Setiap film direpresentasikan sebagai vektor fitur berdasarkan informasi seperti overview (sinopsis), keywords, dan genre. Kemudian, film yang memiliki kemiripan tertinggi dengan film input akan direkomendasikan.
+
+#### Algoritma yang Digunakan
+Sistem ini menggunakan dua algoritma utama:
+
+- TF-IDF (Term Frequency-Inverse Document Frequency), digunakan untuk mengubah data teks dari fitur overview, keywords, dan genre_list menjadi representasi numerik dalam bentuk vektor. TF-IDF memberikan bobot yang lebih besar pada kata-kata yang penting di sebuah dokumen tetapi jarang muncul di seluruh dokumen lainnya, sehingga membantu menyoroti `genre`, `keywords` dan `overview`.
+
+- Cosine Similarity, digunakan untuk menghitung sejauh mana dua vektor TF-IDF mirip satu sama lain. Nilai cosine similarity berkisar antara 0 hingga 1, di mana nilai yang lebih tinggi (1 = satu) menunjukkan tingkat kemiripan yang lebih besar antar film. Film dengan skor tertinggi terhadap film input akan dipilih sebagai rekomendasi.
+
+
+## 4. Modeling and Result
+### 4.1 Model Development dengan Content Based Filtering
+#### TF-IDF
 Pada proyek saya ini perlu menggunakan TF-IDF (Term Frequency - Inverse Document Frequency) karena metode ini sangat efektif dalam mengolah data teks untuk sistem rekomendasi berbasis konten (content-based filtering)
 
 TF-IDF digunakan karena bisa mengekstrak makna penting dari teks, mengabaikan kata tidak penting, dan mengubah teks menjadi format numerik yang siap untuk menghitung kemiripan antar item.
-
 <p align="center">
    <img src="Assets/tf-idf.png"width="500"/>
 </p>
@@ -272,8 +289,6 @@ Insight:
 
 Tahap penggabungan fitur teks (`combined_feature`) sangat penting dalam proses TF-IDF karena memungkinkan berbagai sumber informasi teks seperti overview, keywords, dan genre_list disatukan ke dalam satu kolom. TF-IDF hanya dapat bekerja pada satu kolom teks, sehingga penyatuan ini diperlukan agar semua informasi penting bisa diproses bersama. Dengan menggabungkan fitur-fitur tersebut, representasi teks menjadi lebih kaya dan kontekstual. Misalnya, overview memberikan gambaran alur cerita, keywords mencerminkan tema atau topik spesifik, dan genre_list menambahkan klasifikasi film. Kombinasi ini membantu TF-IDF menghitung bobot kata secara lebih akurat. Selain itu, vektor teks yang lebih lengkap meningkatkan akurasi perhitungan cosine similarity, sehingga menghasilkan rekomendasi film yang lebih relevan. Penggabungan ini juga mencegah kehilangan informasi penting yang mungkin terjadi jika hanya satu fitur saja yang digunakan dalam analisis.
 
-## 4. Modeling and Result
-### 4.1 Model Development dengan Content Based Features
 #### Cosine Similarity
 <p align="center">
    <img src="Assets/cosine_similarity.png"width="500"/>
@@ -362,13 +377,71 @@ Insight:
   - Misalnya, Crouching Tiger, Hidden Dragon lebih ke arah aksi dan seni bela diri, berbeda secara substansi dengan tema psikologis dan mimpi seperti di Inception. Ini bisa terjadi karena kemiripan kata dalam deskripsi atau genre overlap seperti Action dan Drama.
     
 ## 5. Evaluation
-Proyek ini bertujuan untuk melihat apakah rekomendasi film yang dihasilkan berdasarkan genre, keywords, dan overview mampu memberikan hasil yang akurat dan relevan. Namun, karena dataset yang digunakan tidak menyediakan data interaksi eksplisit antara pengguna dan film (seperti rating, klik, atau histori tontonan), evaluasi sistem rekomendasi tidak dapat dilakukan secara kuantitatif menggunakan metrik standar seperti Precision@K, Recall@K, MAP, atau NDCG.
+# **5. Evaluation**
 
-Sebagai gantinya, evaluasi dilakukan secara kualitatif, yaitu dengan menganalisis hasil rekomendasi yang dihasilkan oleh model berbasis konten. Model ini menggunakan representasi teks gabungan dari overview, keywords, dan genre_list yang diolah menggunakan TF-IDF, serta perhitungan cosine similarity untuk menentukan kemiripan antar film.
+### **Evaluasi Kualitatif**
 
 Beberapa film dipilih sebagai input, dan daftar film yang direkomendasikan diamati secara manual. Penilaian dilakukan berdasarkan relevansi isi, kesamaan tema, genre, dan topik. Hasilnya menunjukkan bahwa model mampu merekomendasikan film-film yang secara konteks cukup serupa dengan film acuan, terutama jika teks pada overview, keywords, dan genre_list kaya dan deskriptif.
 
-Catatan: TF-IDF dan cosine similarity digunakan sebagai metode perhitungan kemiripan konten, bukan sebagai metrik evaluasi performa sistem. (Kesalahan saya sebelumnya)
+### **Evaluasi Kuantitatif**
+Untuk mengukur sejauh mana sistem rekomendasi menghasilkan item yang relevan, dilakukan evaluasi precision sederhana. Relevansi diukur berdasarkan kemiripan konten dengan film acuan, yaitu:
+- Genre yang serupa,
+- Keywords/topik utama yang sejalan,
+- Overview (alur/tema cerita) yang menggambarkan kesamaan konteks.
+
+Formula:
+
+          Precision= (Jumlah total rekomendasi) / (Jumlah rekomendasi yang relevan)
+
+contoh: 
+- Film acuan: Tangled
+- Genre: Animation, Family
+- Keywords: magic, horse, fairy tale, musical, princess
+- Overview: A story of a girl with magical hair who is kidnapped and lives in a tower
+
+Sistem menghasilkan 5 film rekomendasi:
+
+| Movie Title    | Genre                              | Keywords                              | Overview                                                 | Relevant (✅/❌) |
+| -------------- | ---------------------------------- | ------------------------------------- | ------------------------------------------------------------------ | --------- |
+| Into the Woods | Fantasy, Comedy, Music             | fairy tale, prince, cinderella, magic | A forest filled with magic and fairy tale characters               | ✅         |
+| Out of Inferno | Action                             | -                                     | A dramatic rescue during a massive fire                            | ❌         |
+| Enchanted      | Comedy, Family, Fantasy, Romance   | fairy tale, princess, magic, queen    | A princess from a fairy tale world enters the real world           | ✅         |
+| Ella Enchanted | Family, Fantasy, Comedy            | elves, magic, prince, spell           | A cursed girl in a magical land who must always obey orders        | ✅         |
+| Shrek 2        | Animation, Comedy, Family, Fantasy | magic, prince, fairy tale, parody     | Shrek and Fiona visit a magical kingdom full of fairy tale figures | ✅         |
+
+
+Penilaian Relevansi:
+
+Dilihat dari kesamaan tema fantasi, keberadaan elemen dongeng, sihir, atau karakter seperti putri dan pangeran, 4 dari 5 film direkomendasikan dianggap relevan.
+
+                           Precision= 4 / 5 = 0.8 atau 80%
+
+contoh 2:
+- Film acuan: Avatar
+- Genre: Action, Adventure, Fantasy, Science Fiction
+- Keywords: culture clash, future, space war, space colony
+- Overview: In the 22nd century, a paraplegic Marine is dispatched to the moon Pandora on a unique mission, but becomes torn between following orders and protecting an alien civilization.
+Top 5:
+
+| Title               | Genre                                           | Keywords                                                   | Overview                                                                                                  | Relevant (✅/❌) |
+| ------------------- | ----------------------------------------------- | ---------------------------------------------------------- | --------------------------------------------------------------------------------------------------------- | --------- |
+| **Mission to Mars** | \[Science Fiction]                              | \[mars, spacecraft, space travel, alien, long travel]      | When contact is lost with the crew of the first Mars expedition, a rescue mission is launched.            | ✅         |
+| **Aliens**          | \[Horror, Action, Thriller, Science Fiction]    | \[android, extraterrestrial technology, space marines]     | When Ripley's lifepod is found by a salvage crew after 57 years, she agrees to return to face the aliens. | ✅         |
+| **Moonraker**       | \[Action, Adventure, Thriller, Science Fiction] | \[venice, mass murder, space mission, space shuttle]       | During the transportation of a Space Shuttle, Bond uncovers a plot to commit global genocide.             | ✅         |
+| **Alien³**          | \[Science Fiction, Action, Horror]              | \[prison, android, spacecraft, space marine, imprisonment] | After escaping with Newt and Hicks from the alien planet, Ripley crash lands on a prison planet.          | ✅         |
+| **Spaceballs**      | \[Comedy, Science Fiction]                      | \[android, lasergun, swordplay, temple, space mission]     | When the nefarious Dark Helmet hatches a plan to snatch Princess Vespa, only Lone Starr can stop him.     | ❌         |
+
+
+- Total recommended movies: 5
+- Relevant (similar) movies: 4
+    - Criteria for relevance: Similarity in genre, keywords, and overview context (sci-fi, space, futuristic themes)
+
+                              Precision= 4 / 5 = 0.8 atau 80% 
+
+
+Kesimpulan:
+
+Dengan mempertimbangkan genre, keywords, dan overview sebagai dasar penilaian relevansi, model berhasil merekomendasikan film-film dengan konteks dan tema yang serupa. Meskipun ini hanya evaluasi kuantitatif sederhana, hasil precision sebesar 80% menunjukkan bahwa pendekatan content-based menggunakan representasi gabungan teks memberikan hasil yang cukup akurat dan sesuai dengan harapan.
 
 ## Problem Answer (Untuk no 2 dan 3, perbandingan dengan 4.2 Penerapan)
 ### 1. Bagaimana pengguna dapat menemukan film yang mirip dengan film favorit mereka berdasarkan isi/konten film?
@@ -385,6 +458,7 @@ Namun, setelah tiga besar, kualitas rekomendasi mulai menurun secara signifikan.
 
 Penurunan skor cosine similarity yang drastis ini menunjukkan bahwa model memiliki keterbatasan dalam mempertahankan relevansi ketika fitur-fitur yang digunakan terlalu umum. Oleh karena itu, untuk meningkatkan akurasi terutama di luar film-film yang sangat mirip, perlu dipertimbangkan penambahan fitur yang lebih mendalam seperti karakter, setting, atau analisis sentimen dari ulasan pengguna.
 
+
 ### 2. Apakah informasi tambahan seperti perusahaan produksi dapat digunakan untuk lebih memahami kesamaan antar film?
 <p align="center">
    <img src="Assets/no2_fungsi.png"width="500"/>
@@ -398,11 +472,12 @@ Menambahkan informasi production_companies dapat meningkatkan akurasi rekomendas
 
 | Kondisi Film                                                 | Dampak Penambahan `production_companies`                                                                                          |
 | ------------------------------------------------------------ | --------------------------------------------------------------------------------------------------------------------------------- |
-| **Film dengan gaya khas studio** (misal: *Tangled* - Disney) | **Meningkatkan akurasi** karena banyak film dari studio tersebut punya tone, genre, dan target audiens yang mirip.              |
-| **Film dengan genre kuat dan lebih umum** (misal: *Avatar*)  | **Peningkatan akurasi terbatas**, karena genre seperti sci-fi lebih ditentukan oleh cerita, visual, dan tema, bukan studionya. |
+| **Film dengan gaya khas studio** (*Tangled* - Disney) | **Meningkatkan akurasi** karena banyak film dari studio tersebut punya tone, genre, dan target audiens yang mirip.              |
+| **Film dengan genre kuat dan lebih umum** (*Avatar*)  | **Peningkatan akurasi terbatas**, karena genre seperti sci-fi lebih ditentukan oleh cerita, visual, dan tema, bukan studionya. |
 
 
 Penambahan **production_companies** dapat meningkatkan akurasi, terutama untuk film yang dipengaruhi kuat oleh gaya studio (misalnya animasi Disney). Namun, untuk film dengan kekuatan utama di alur cerita atau genre luas seperti sci-fi, pengaruhnya lebih kecil.
+
 
 ### 3. Apakah informasi berupa keywords dan overview, tanpa melibatkan genre, dapat menghasilkan perhitungan cosine similarity yang lebih akurat dalam merekomendasikan film?
 <p align="center">
